@@ -13,7 +13,7 @@ def responseFormatter(weather):
         description = weather['weather'][0]['description']
         temperature = weather['main']['temp']
         
-        finalMsg = "Location: %s \nConditions: %s \nTemperature: %s degrees celsius" %(name, description, temperature)
+        finalMsg = "Location: %s \nConditions: %s \nTemperature: %s°C" %(name, description, temperature)
     except:
         finalMsg = "Problem retrieving data"
 
@@ -28,7 +28,16 @@ def getWeather(city):
     weather = response.json()
 
     label['text'] = responseFormatter(weather)
+    iconCode = weather['weather'][0]['icon']
+    open_image(iconCode)
 
+
+def open_image(icon):
+    size = int(lowerFrame.winfo_height()*0.25)
+    img = ImageTk.PhotoImage(Image.open('./img/'+icon+'.png').resize((size, size)))
+    weatherIcon.delete("all")
+    weatherIcon.create_image(0,0, anchor='nw', image=img)
+    weatherIcon.image = img
 
 # api.openweathermap.org/data/2.5/forecast?q={city name}&appid={API key}
 # API Key f4c4bf592995aa2d5ca73916ee5c7867
@@ -57,7 +66,11 @@ button1.place(relwidth=0.3, relheight=1, relx=0.7)
 lowerFrame = tk.Frame(root, bg='#99ceff', bd=10)
 lowerFrame.place(relwidth=0.75, relheight=0.6, relx=0.5, rely=0.25, anchor='n')
 
-label = tk.Label(lowerFrame, font=('Arial Black', 25))
+label = tk.Label(lowerFrame, font=('Courier', 21), anchor='nw', justify='left', pady=16, padx=21)
 label.place(relwidth=1, relheight=1)
+
+# place icon
+weatherIcon = tk.Canvas(label, bd=0, highlightthickness=0)
+weatherIcon.place(relx=.75, rely=0, relwidth=1, relheight=0.5)
 
 root.mainloop()
